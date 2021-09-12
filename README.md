@@ -58,7 +58,7 @@ You can navigate to 127.0.0.1:5432
 
 I0604 16:10:49.811561 139835092129600 _internal.py:122]  * Running on http://127.0.0.1:5432/ (Press CTRL+C to quit)
 ``` 
-Point your browser to `127.0.0.1:5432` to
+Point your browser to `127.0.0.1:5432` to view the results.
 
 
 ### Using a GPU
