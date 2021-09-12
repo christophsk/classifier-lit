@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 ## Model and Data
 The implementation assumes you have a trained PyTorch text classifier with labels 0,...,num_labels. 
-The layout should confirm to the usual layout of PyTorch models.
+The model directory should confirm to the usual layout of PyTorch models.
 
 The data is a `.csv` with columns
 ```
