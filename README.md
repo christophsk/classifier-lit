@@ -65,9 +65,9 @@ Point your browser to `127.0.0.1:5432` to view the results.
 Inference on a even a moderate set of sentences can be computationally intensive and benefits from
 GPU assistance. Typically, this is a headless cloud instance. 
 
-In this case, use SSH with _port forwarding_, e.g.,
+In this case, use SSH with port forwarding from your local machine, e.g.,
 ```
-ssh -i access-creds.pem -L 5432:localhost:5432 <your id>@<IP address>
+ssh -i access-creds.pem -L 5432:localhost:5432 <your id>@<remote IP address>
 ```
 Now, start the server on the remote and you can view the results in your local browser.
 
