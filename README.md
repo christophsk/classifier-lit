@@ -1,7 +1,7 @@
 # `classifier-lit`
 This package provides an implementation of the Language Interpretability Tool (LIT) for
 a `pytorch` sentence classifier.  Additional information on LIT can be 
-found at [pair-code](https://pair-code.github.io/lit/).
+found at [pair-code](https://pair-code.github.io/lit/). This is released under the MIT License.
 
 ## Requirements
 ```
