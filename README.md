@@ -71,6 +71,32 @@ ssh -i access-creds.pem -L 5432:localhost:5432 <your id>@<remote IP address>
 ```
 Now, start the server on the remote and you can view the results in your local browser.
 
+## Usage
+```
+usage: python clf_lit.py [-h] [--absl_flags ABSL_FLAGS] --model_path
+                                MODEL_PATH --data_path DATA_PATH --num_labels
+                                NUM_LABELS [--batch_size BATCH_SIZE]
+                                [--max_seq_len MAX_SEQ_LEN] [--port PORT]
+
+Start the LIT server
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --absl_flags ABSL_FLAGS
+                        absl flags - defaults to []
+  --model_path MODEL_PATH
+                        directory of the pytorch model or pretrained name
+  --data_path DATA_PATH
+                        path + file.csv, for input data .csv
+  --num_labels NUM_LABELS
+                        number of labels in the classification model
+  --batch_size BATCH_SIZE
+                        batch size, default 8
+  --max_seq_len MAX_SEQ_LEN
+                        maximum sequence length up to 512, default 128
+  --port PORT           LIT server port, default 5432
+```
+
 # License
 MIT License Copyright (c)  2021 Chris Skiscim
 

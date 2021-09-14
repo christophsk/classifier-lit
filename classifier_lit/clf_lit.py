@@ -22,6 +22,29 @@ optional arguments:
                         maximum sequence length up to 512, default 128
   --port PORT           LIT server port, default 5432
 """
+# MIT License
+# Copyright (c) 2021 Chris Skiscim
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# This was assembled from various examples in https://github.com/PAIR-code/lit
 import os
 import re
 
@@ -49,7 +72,9 @@ def _from_pretrained(cls, *args, **kw):
     try:
         return cls.from_pretrained(*args, **kw)
     except OSError as e:
-        logging.exception("Error loading model: {}: {}".format(type(e), str(e)))
+        logging.exception(
+            "Error loading model: {}: {}".format(type(e), str(e))
+        )
 
 
 class TextClassifier(lit_model.Model):
@@ -239,7 +264,7 @@ if __name__ == "__main__":
     logger.setLevel(logging.INFO)
 
     parser = ArgumentParser(
-        prog="python classifier_lit.py", description="Start the LIT server"
+        prog=os.path.split(__file__)[-1], description="Start the LIT server"
     )
     parser.add_argument(
         "--absl_flags",
