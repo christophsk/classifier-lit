@@ -1,10 +1,14 @@
 #!/bin/bash
+#
+# Two arguments are required. The first is the .csv
+# with the sentence data, and the second is the pytorch
+# model directory.
+#
 
-# Where is clf_lit.py ? Update for your environment
+# !!! Update for your environment or put in your PYTHONPATH !!!
 export LIT=~/projects/classifier-lit/classifier_lit/clf_lit.py
 
 if (( $# != 2 )); then
-    >&2 echo "two arguments are required"
     >&2 echo "usage: bash start_lit.sh <data file> <model file>"
     >&2 echo ""
     exit 1
@@ -21,7 +25,7 @@ if ! [ -d $2 ]; then
 fi
 
 if ! [ -f $2/config.json ]; then
-  >&2 echo "no config.json in $2"
+  >&2 echo "model cannot be loaded - no config.json in $2"
   exit 1
 fi
 
