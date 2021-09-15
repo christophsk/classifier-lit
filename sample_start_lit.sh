@@ -24,11 +24,6 @@ if ! [ -d $2 ]; then
   exit 1
 fi
 
-if ! [ -f $2/config.json ]; then
-  >&2 echo "model cannot be loaded - no config.json in $2"
-  exit 1
-fi
-
 export SENT_CSV=$1
 export CLF_MODEL=$2
 
