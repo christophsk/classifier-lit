@@ -6,7 +6,13 @@
 #
 
 # !!! Update for your environment or put in your PYTHONPATH !!!
+# TODO make this an entry point in setup.py
 export LIT=~/projects/classifier-lit/classifier_lit/clf_lit.py
+
+if ! [ -f $LIT ]; then
+  >&2  echo "cannot find clf_lit.py - update"
+  exit 1
+fi
 
 if (( $# != 2 )); then
     >&2 echo "usage: bash start_lit.sh <data file> <model file>"

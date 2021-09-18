@@ -1,5 +1,5 @@
-# `classifier-lit`
-This package provides an implementation of the Language Interpretability Tool (LIT) for
+# `classifier-lit`: Language Interpretability Tool (LIT) for Text Classification
+This package provides an implementation of Google Brain's Language Interpretability Tool (LIT) for
 a `pytorch` sentence classifier.  Additional information on LIT can be 
 found at [pair-code](https://pair-code.github.io/lit/). This is released under the MIT License.
 
@@ -17,15 +17,23 @@ The data is a `.csv` with columns
 "src", "label", "sentence"
 ```
 where *src* is a user-specific identifier, `sentence` is the text to be classified. The `label` column
-is the expected classification label and is used to calculate various metrics. If the expected label is not
-known, a value of 0 can be used. The metrics will be useless, but everything else will work.
+is the label used for validation and is used to calculate various metrics. If the validation label is not
+known, a value of 0 can be used. The metrics will be meaningless, but all the other LIT features will work.
 
 ## Starting the LIT Server
 
+The easiest way is to use the shell script `start_lit.sh`. If needed, change the permissions
+via `chmod 744 start_lit.sh`,
+
 ```bash
-python lit.py \
-    --model_path ~/your_model_directory \
-    --data_path ~/your_sentences.csv \
+./start_lit.sh sentences.csv model_directory
+```
+
+or
+```bash
+python clf_lit.py \
+    --data_path sentences.csv \
+    --model_path model_directory \
     --num_labels 3 \
     --batch_size 8 \
     --max_seq_len 128 \
@@ -61,14 +69,16 @@ I0604 16:10:49.811561 139835092129600 _internal.py:122]  * Running on http://127
 Point your browser to `127.0.0.1:5432` to view the results.
 
 
-### Using a GPU
+### Running with a GPU
 Inference on a even a moderate set of sentences can be computationally intensive and benefits from
-GPU assistance. Typically, this is a headless cloud instance. 
+GPU assistance. Typically, this is a remote, headless cloud instance. 
 
-In this case, use SSH with port forwarding, e.g.,
+You can use your local browser by forwarding the port from the remote using SSH:
+
 ```
 ssh -i access-creds.pem -L 5432:localhost:5432 <your id>@<remote IP address>
 ```
+
 Start the server on the remote and view the results in your local browser.
 
 ## Usage
@@ -98,7 +108,7 @@ optional arguments:
 ```
 
 # License
-MIT License Copyright (c)  2021 Chris Skiscim
+MIT License Copyright (c) 2021 Chris Skiscim
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
