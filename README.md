@@ -1,7 +1,9 @@
-# `classifier-lit`: Language Interpretability Tool (LIT) for Text Classification
-This package provides an implementation of Google Brain's Language Interpretability Tool (LIT) for
-a `pytorch` sentence classifier.  Additional information on LIT can be 
-found at [pair-code](https://pair-code.github.io/lit/). This is released under the MIT License.
+# 🔥 `classifier-lit` Language Interpretability Tool (LIT) for Text Classification
+
+This package provides an implementation of the PAIR code 
+[Language Interpretability Tool](https://pair-code.github.io/lit/) for a sentence
+classification. This builds off the various LIT examples to provide a convenient
+way to run the LIT server.
 
 ## Requirements
 ```
@@ -9,27 +11,35 @@ pip install -r requirements.txt
 ```
 
 ## Model and Data
-The implementation assumes you have a trained PyTorch text classifier with labels 0,...,num_labels. 
-The model directory should confirm to the usual layout of PyTorch models.
+### Model
+You're required to have a local `pytorch` SequenceClassification model you've trained on labels in
+`range(num_labels)`. The model's directory should conform to the usual `pytorch` layout.
 
-The data is a `.csv` with columns
+### Data
+The data is a `.csv` ideally consisting of validation data, with columns
 ```
 "src", "label", "sentence"
 ```
-where *src* is a user-specific identifier, `sentence` is the text to be classified. The `label` column
-is the label used for validation and is used to calculate various metrics. If the validation label is not
-known, a value of 0 can be used. The metrics will be meaningless, but all the other LIT features will work.
+`src` is a user-specific identifier, `label` is the validation label, and `sentence` is the text to be classified.
 
-## Starting the LIT Server
+If the validation label is not known, any value in `range(num_labels)` can be used. Typically, I
+the negative example label of 0. The metrics will be meaningless, but all the other features are
+available.
 
-The easiest way is to use the shell script `start_lit.sh`. If needed, change the permissions
-via `chmod 744 start_lit.sh`,
+## Starting the Server
+
+The easiest way is to use bash script `clf_lit.sh`. 
+The script takes three arguments, the `.csv` and the model directory:
 
 ```bash
-./start_lit.sh sentences.csv model_directory
+./clf_lit.sh sentences.csv model_directory
 ```
 
-or
+The default content root is `$HOME/classifier-lit` and can be changed in the script as can
+the other defaults (shown below).
+
+Or use Python
+
 ```bash
 python clf_lit.py \
     --data_path sentences.csv \
@@ -39,6 +49,7 @@ python clf_lit.py \
     --max_seq_len 128 \
     --port 5432
 ```
+
 After a short wait, you should see
 ```
 I0604 16:10:49.734775 139835092129600 classifier_lit.py:75] model loaded

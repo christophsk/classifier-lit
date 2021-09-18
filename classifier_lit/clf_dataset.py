@@ -21,6 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import logging
 import os
+from warnings import warn
 
 import pandas as pd
 import pandas.errors as pd_err
@@ -36,7 +37,7 @@ class ClfDataset(lit_dataset.Dataset):
         if not os.path.isfile(data_path):
             raise FileNotFoundError(data_path)
 
-        self.LABELS = [str(lbl) for lbl in range(num_labels)]
+        self.LABELS = [str(lbl) for lbl in range(int(num_labels))]
         self._examples = list()
 
         try:
@@ -49,7 +50,8 @@ class ClfDataset(lit_dataset.Dataset):
         except (pd_err.ParserError, pd_err.EmptyDataError) as e:
             raise e
 
-        logger.info("rows : {:,d}".format(len(df)))
+        nl = len(df.label.unique())
+        logger.info("rows: {:,d}  unique labels: {}".format(len(df), nl))
 
         self._examples = [
             {

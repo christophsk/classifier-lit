@@ -291,7 +291,7 @@ if __name__ == "__main__":
         dest="port",
         type=int,
         default=5432,
-        help="LIT server port default, 5432",
+        help="LIT server port default 5432",
     )
 
     args_ = parser.parse_args()
