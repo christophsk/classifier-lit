@@ -43,9 +43,6 @@ FLAGS = flags.FLAGS
 
 
 def _from_pretrained(cls, *args, **kw):
-    """
-    Load a transformers model in PyTorch.
-    """
     try:
         return cls.from_pretrained(*args, **kw)
     except OSError as e:
@@ -213,12 +210,10 @@ def main(_):
     model_path = FLAGS.model_path
     num_labels = FLAGS.num_labels
 
-    if model_path.endswith(".tar.gz"):
-        if not os.path.isfile(model_path):
-            raise ValueError("can't find {}".format(model_path))
-        model_path = trf.file_utils.cached_path(
-            model_path, extract_compressed_file=True
-        )
+    # TODO test .tar.gz models
+    model_path = trf.file_utils.cached_path(
+        model_path, extract_compressed_file=False
+    )
     if not os.path.isfile(data_path_):
         raise FileNotFoundError(data_path_)
 

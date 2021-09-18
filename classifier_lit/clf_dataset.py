@@ -21,7 +21,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import logging
 import os
-from warnings import warn
 
 import pandas as pd
 import pandas.errors as pd_err
