@@ -210,7 +210,7 @@ def main(_):
     model_path = FLAGS.model_path
     num_labels = FLAGS.num_labels
 
-    # TODO test .tar.gz models
+    # TODO test .tar.gz model files
     model_path = trf.file_utils.cached_path(
         model_path, extract_compressed_file=False
     )
@@ -238,12 +238,12 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         prog=os.path.split(__file__)[-1], description="Start the LIT server"
     )
-    parser.add_argument(
-        "--absl_flags",
-        action="append",
-        default=[],
-        help="absl flags - do not change",
-    )
+    # parser.add_argument(
+    #     "--absl_flags",
+    #     action="append",
+    #     default=[],
+    #     help="absl flags - do not change",
+    # )
     parser.add_argument(
         "--model_path",
         dest="model_path",

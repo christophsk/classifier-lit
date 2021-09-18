@@ -1,8 +1,9 @@
-# 🔥 `classifier-lit` Language Interpretability Tool (LIT) for Text Classification
+# 🔥 `classifier-lit`
+## The Language Interpretability Tool (LIT) for Text Classification
 
 This package provides an implementation of the PAIR code 
 [Language Interpretability Tool](https://pair-code.github.io/lit/) for a sentence
-classification. This builds off the various LIT examples to provide a convenient
+classification. It builds off the various LIT examples to provide a convenient
 way to run the LIT server.
 
 ## Requirements
@@ -22,8 +23,8 @@ The data is a `.csv` ideally consisting of validation data, with columns
 ```
 `src` is a user-specific identifier, `label` is the validation label, and `sentence` is the text to be classified.
 
-If the validation label is not known, any value in `range(num_labels)` can be used. Typically, I
-the negative example label of 0. The metrics will be meaningless, but all the other features are
+If the validation label is not known, any value in `range(num_labels)` can be used (e.g., 0). 
+The metrics will be meaningless, but all the other LIT features are
 available.
 
 ## Starting the Server
@@ -38,7 +39,7 @@ The script takes three arguments, the `.csv` and the model directory:
 The default content root is `$HOME/classifier-lit` and can be changed in the script as can
 the other defaults (shown below).
 
-Or use Python
+Or,
 
 ```bash
 python clf_lit.py \
