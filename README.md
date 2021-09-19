@@ -1,20 +1,19 @@
 # 🔥 `classifier-lit`
 ## The Language Interpretability Tool (LIT) for Text Classification
 
-This package provides an implementation of the PAIR code 
-[Language Interpretability Tool](https://pair-code.github.io/lit/) for a sentence
-classification. It builds off the various LIT examples to provide a convenient
-way to run the LIT server.
+This app is an implementation of the
+[Language Interpretability Tool](https://pair-code.github.io/lit/). This was
+developed for convenience and to try other LIT features.
 
 ## Requirements
 ```
 pip install -r requirements.txt
 ```
 
-## Model and Data
-### Model
-You're required to have a local `pytorch` SequenceClassification model you've trained on labels in
-`range(num_labels)`. The model's directory should conform to the usual `pytorch` layout.
+## Model
+A model name or path for a `transformers` SequenceClassification model. 
+This can be a path to your (`pytorch`) trained model or the name an appropriate
+model from [HuggingFace models](https://huggingface.co/models). 
 
 ### Data
 The data is a `.csv` ideally consisting of validation data, with columns
@@ -81,11 +80,12 @@ I0604 16:10:49.811561 139835092129600 _internal.py:122]  * Running on http://127
 Point your browser to `127.0.0.1:5432` to view the results.
 
 
-### Running with a GPU
+### Using a GPU
 Inference on a even a moderate set of sentences can be computationally intensive and benefits from
-GPU assistance. Typically, this is a remote, headless cloud instance. 
+GPU assistance. A GPU is automatically recognized and used.
 
-You can use your local browser by forwarding the port from the remote using SSH:
+If your GPU instance is a remote, headless cloud instance, you can still
+use your local browser by forwarding the remote's port using SSH:
 
 ```
 ssh -i access-creds.pem -L 5432:localhost:5432 <your id>@<remote IP address>

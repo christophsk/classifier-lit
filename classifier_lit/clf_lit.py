@@ -45,10 +45,11 @@ FLAGS = flags.FLAGS
 def _from_pretrained(cls, *args, **kw):
     try:
         return cls.from_pretrained(*args, **kw)
-    except OSError as e:
+    except(OSError, EnvironmentError) as e:
         logging.exception(
             "Error loading model: {}: {}".format(type(e), str(e))
         )
+        raise
 
 
 class TextClassifier(lit_model.Model):
@@ -64,6 +65,7 @@ class TextClassifier(lit_model.Model):
 
             num_labels (int): number of classification labels
         """
+        print(model_name_or_path)
         self.LABELS = [str(lbl) for lbl in range(num_labels)]
         self.tokenizer = trf.AutoTokenizer.from_pretrained(model_name_or_path)
         model_config = trf.AutoConfig.from_pretrained(
@@ -211,16 +213,22 @@ def main(_):
     num_labels = FLAGS.num_labels
 
     # TODO test .tar.gz model files
-    model_path = trf.file_utils.cached_path(
-        model_path, extract_compressed_file=False
-    )
+    # if the model can't be found at `model_path`, let TextClassification
+    # try to find in $TRANSFORMERS_CACHE, download it, or give up.
+    try:
+        model_path = trf.file_utils.cached_path(
+            model_path, extract_compressed_file=True
+        )
+    except(OSError, EnvironmentError):
+        pass
+
     if not os.path.isfile(data_path_):
         raise FileNotFoundError(data_path_)
 
     # Load the model we defined above.
     models = {"classifier": TextClassifier(model_path, num_labels)}
     # GC data
-    datasets = {"gc-data": ClfDataset(data_path_, num_labels)}
+    datasets = {"data": ClfDataset(data_path_, num_labels)}
 
     # Start the LIT server. See server_flags.py for server options.
     lit_demo = dev_server.Server(models, datasets, **server_flags.get_flags())
@@ -238,12 +246,6 @@ if __name__ == "__main__":
     parser = ArgumentParser(
         prog=os.path.split(__file__)[-1], description="Start the LIT server"
     )
-    # parser.add_argument(
-    #     "--absl_flags",
-    #     action="append",
-    #     default=[],
-    #     help="absl flags - do not change",
-    # )
     parser.add_argument(
         "--model_path",
         dest="model_path",
@@ -296,5 +298,6 @@ if __name__ == "__main__":
     flags.DEFINE_integer("max_seq_len", args_.max_seq_len, "max seq length")
     flags.DEFINE_integer("num_labels", args_.num_labels, "number of labels")
     flags.port = args_.port
+    flags.absl_flags = []
 
     app.run(main)

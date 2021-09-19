@@ -4,8 +4,8 @@
 # model directory.
 
 # !!! UPDATE FOR YOUR ENVIRONMENT!!!
-export PROJECT=$HOME/classifier-lit
-export NUM_LABELS=3
+export PROJECT=$HOME/pycharm_projects/classifier-lit
+export TRANSFORMERS_CACHE=/Users/chris/.cache/huggingface/transformers/
 
 # CLI arguments
 export PORT=5432
@@ -17,7 +17,7 @@ export MAX_LEN=128
 #-------------------------------------------------
 export LIT=$PROJECT/classifier_lit/clf_lit.py
 
-if (( $# != 2 )); then
+if (( $# != 3 )); then
     >&2 echo "Usage: bash clf.sh <data file> <model file> <num_labels>"
     exit 1
 fi
@@ -32,13 +32,9 @@ if ! [ -f $1 ]; then
   exit 1
 fi
 
-if ! [ -d $2 ]; then
-  >&2  echo "Model directory not found: $2"
-  exit 1
-fi
-
 export SENT_CSV=$1
 export CLF_MODEL=$2
+export NUM_LABELS=$3
 
 echo "starting classifier_lit"
 echo ""
