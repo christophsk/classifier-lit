@@ -19,8 +19,11 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# lit-nlp is licensed under the Apache License Version 2.0
 import logging
 import os
+from typing import List
 
 import pandas as pd
 import pandas.errors as pd_err
@@ -31,21 +34,23 @@ logger = logging.getLogger(__name__)
 
 
 class ClfDataset(lit_dataset.Dataset):
-    def __init__(self, data_path, num_labels):
+    def __init__(self, data_path: str, labels: List[str], lbl_txt_cols=None):
         super().__init__()
         if not os.path.isfile(data_path):
             raise FileNotFoundError(data_path)
 
-        self.LABELS = [str(lbl) for lbl in range(int(num_labels))]
+        self.LABELS = labels
         self._examples = list()
+        lbl_txt_cols = [1, 2]
 
         try:
             df = pd.read_csv(
                 data_path,
                 delimiter=",",
                 header=None,
-                names=["src", "label", "sentence"],
+                usecols=lbl_txt_cols,
             )
+            df.columns = ["label", "text"]
         except (pd_err.ParserError, pd_err.EmptyDataError) as e:
             raise e
 
@@ -54,16 +59,14 @@ class ClfDataset(lit_dataset.Dataset):
 
         self._examples = [
             {
-                "sentence": row["sentence"],
+                "text": row["text"],
                 "label": row["label"],
-                "src": row["src"],
             }
             for _, row in df.iterrows()
         ]
 
     def spec(self):
         return {
-            "sentence": lit_types.TextSegment(),
+            "text": lit_types.TextSegment(),
             "label": lit_types.CategoryLabel(vocab=self.LABELS),
-            "src": lit_types.TextSegment(),
         }

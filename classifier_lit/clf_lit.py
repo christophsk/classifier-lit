@@ -22,74 +22,85 @@
 #
 # This was assembled from various examples in
 # https://github.com/PAIR-code/lit
-import os
+# lit-nlp is licensed under the Apache License Version 2.0
 import re
 
 import torch
 import transformers as trf
-from absl import app
 from absl import flags
 from absl import logging
-from lit_nlp import dev_server
-from lit_nlp import server_flags
 from lit_nlp.api import model as lit_model
 from lit_nlp.api import types as lit_types
 from lit_nlp.lib import utils
 
-from classifier_lit.clf_dataset import ClfDataset
-
-# NOTE: additional flags defined in server_flags.py
 FLAGS = flags.FLAGS
+logger = logging.get_absl_logger()
 
 
 def _from_pretrained(cls, *args, **kw):
     try:
         return cls.from_pretrained(*args, **kw)
-    except(OSError, EnvironmentError) as e:
-        logging.exception(
-            "Error loading model: {}: {}".format(type(e), str(e))
-        )
-        raise
+    except (OSError, EnvironmentError) as e:
+        raise e
 
 
 class TextClassifier(lit_model.Model):
     compute_grads: bool = True
 
-    def __init__(self, model_name_or_path, num_labels):
+    def __init__(
+        self,
+        model_name_or_path=None,
+    ):
         """
-        Instantiate LIT.
+        Retrieve the model and data in preparation for inference.
 
         Args:
             model_name_or_path (str): directory containing the `pytorch`
-                model
+                model or the name of a HuggingFace model. If the model
+                name is not in the local cache (~/.cache), it will be
+                downloaded, if available.
 
-            num_labels (int): number of classification labels
+        Raises:
+            OSError, EnvironmentError: If the model_name_or_path cannot
+                be loaded
+
         """
-        print(model_name_or_path)
-        self.LABELS = [str(lbl) for lbl in range(num_labels)]
-        self.tokenizer = trf.AutoTokenizer.from_pretrained(model_name_or_path)
-        model_config = trf.AutoConfig.from_pretrained(
-            model_name_or_path,
-            num_labels=num_labels,
-            output_hidden_states=True,
-            output_attentions=True,
-        )
-        self.model = _from_pretrained(
-            trf.AutoModelForSequenceClassification,
-            model_name_or_path,
-            config=model_config,
-        )
+        # TODO add support for label names in place of integers
+        try:
+            self.tokenizer = trf.AutoTokenizer.from_pretrained(
+                model_name_or_path
+            )
+            model_config = trf.AutoConfig.from_pretrained(
+                model_name_or_path,
+                output_hidden_states=True,
+                output_attentions=True,
+            )
+            self.model = _from_pretrained(
+                trf.AutoModelForSequenceClassification,
+                model_name_or_path,
+                config=model_config,
+            )
+            self.id2label = model_config.id2label
+            self.LABELS = list(map(str, self.id2label.keys()))
+            self.architectures = ",".join(model_config.architectures)
+            logging.info(
+                "{} loaded with {} labels".format(
+                    self.architectures, len(self.LABELS)
+                )
+            )
+        except (OSError, EnvironmentError) as e:
+            logger.exception(
+                "failed to load the model - {}: {}".format(type(e), str(e))
+            )
         self.model.eval()
-        logging.info("model loaded")
 
     # LIT API implementation
-
     def max_minibatch_size(self):
         return FLAGS.batch_size
 
     def predict_minibatch(self, inputs):
         encoded_input = self.tokenizer.batch_encode_plus(
-            [ex["sentence"] for ex in inputs],
+            [ex["text"] for ex in inputs],
             return_tensors="pt",
             add_special_tokens=True,
             max_length=FLAGS.max_seq_len,
@@ -166,7 +177,7 @@ class TextClassifier(lit_model.Model):
 
     def input_spec(self) -> lit_types.Spec:
         return {
-            "sentence": lit_types.TextSegment(),
+            "text": lit_types.TextSegment(),
             "label": lit_types.CategoryLabel(
                 vocab=self.LABELS, required=False
             ),
@@ -195,109 +206,12 @@ class TextClassifier(lit_model.Model):
 
     def spec(self):
         return {
-            "sentence": lit_types.TextSegment(),
+            "text": lit_types.TextSegment(),
             "label": lit_types.CategoryLabel(vocab=self.LABELS),
-            "src": lit_types.TextSegment(),
         }
 
     def fit_transform_with_metadata(self, indexed_inputs):
-        pass
+        raise NotImplementedError()
 
     def get_embedding_table(self):
-        pass
-
-
-def main(_):
-    data_path_ = FLAGS.data_path
-    model_path = FLAGS.model_path
-    num_labels = FLAGS.num_labels
-
-    # TODO test .tar.gz model files
-    # if the model can't be found at `model_path`, let TextClassification
-    # try to find in $TRANSFORMERS_CACHE, download it, or give up.
-    try:
-        model_path = trf.file_utils.cached_path(
-            model_path, extract_compressed_file=True
-        )
-    except(OSError, EnvironmentError):
-        pass
-
-    if not os.path.isfile(data_path_):
-        raise FileNotFoundError(data_path_)
-
-    # Load the model we defined above.
-    models = {"classifier": TextClassifier(model_path, num_labels)}
-    # GC data
-    datasets = {"data": ClfDataset(data_path_, num_labels)}
-
-    # Start the LIT server. See server_flags.py for server options.
-    lit_demo = dev_server.Server(models, datasets, **server_flags.get_flags())
-    lit_demo.serve()
-
-
-if __name__ == "__main__":
-    from argparse import ArgumentParser
-
-    log_fmt = "[%(asctime)s%(levelname)8s], [%(filename)s:%(lineno)s "
-    log_fmt += "- %(funcName)s()], %(message)s"
-    logger = logging.get_absl_logger()
-    logger.setLevel(logging.INFO)
-
-    parser = ArgumentParser(
-        prog=os.path.split(__file__)[-1], description="Start the LIT server"
-    )
-    parser.add_argument(
-        "--model_path",
-        dest="model_path",
-        type=str,
-        required=True,
-        help="tar.gz, name, or directory of the pytorch model",
-    )
-    parser.add_argument(
-        "--data_path",
-        dest="data_path",
-        type=str,
-        required=True,
-        help="path + file.csv, for input data .csv",
-    )
-    parser.add_argument(
-        "--num_labels",
-        dest="num_labels",
-        type=int,
-        required=True,
-        help="number of labels in the classification model",
-    )
-    parser.add_argument(
-        "--batch_size",
-        dest="batch_size",
-        type=str,
-        required=False,
-        default=8,
-        help="batch size, default 8",
-    )
-    parser.add_argument(
-        "--max_seq_len",
-        dest="max_seq_len",
-        type=int,
-        required=False,
-        default=128,
-        help="maximum sequence length up to 512, default 128",
-    )
-    parser.add_argument(
-        "--port",
-        dest="port",
-        type=int,
-        default=5432,
-        help="LIT server port default 5432",
-    )
-
-    args_ = parser.parse_args()
-    flags.DEFINE_string("model_path", args_.model_path, "saved model")
-    flags.DEFINE_string("data_path", args_.data_path, "validation data")
-    flags.DEFINE_integer("batch_size", args_.batch_size, "batch size")
-    flags.DEFINE_integer("max_seq_len", args_.max_seq_len, "max seq length")
-    flags.DEFINE_integer("num_labels", args_.num_labels, "number of labels")
-    flags.port = args_.port
-    flags.absl_flags = []
-
-    app.run(main)
+        raise NotImplementedError()

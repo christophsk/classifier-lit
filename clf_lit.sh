@@ -5,7 +5,6 @@
 
 # !!! UPDATE FOR YOUR ENVIRONMENT!!!
 export PROJECT=$HOME/pycharm_projects/classifier-lit
-export TRANSFORMERS_CACHE=/Users/chris/.cache/huggingface/transformers/
 
 # CLI arguments
 export PORT=5432
@@ -15,9 +14,9 @@ export MAX_LEN=128
 #-------------------------------------------------
 # You shouldn't need to change anything below here
 #-------------------------------------------------
-export LIT=$PROJECT/classifier_lit/clf_lit.py
+export LIT=$PROJECT/classifier_lit/clf_server.py
 
-if (( $# != 3 )); then
+if (( $# != 2 )); then
     >&2 echo "Usage: bash clf.sh <data file> <model file> <num_labels>"
     exit 1
 fi
@@ -34,7 +33,6 @@ fi
 
 export SENT_CSV=$1
 export CLF_MODEL=$2
-export NUM_LABELS=$3
 
 echo "starting classifier_lit"
 echo ""
@@ -42,7 +40,6 @@ echo ""
 python $LIT \
   --model_path $CLF_MODEL \
   --data_path $SENT_CSV \
-  --num_labels $NUM_LABELS \
   --batch_size $BSZ \
   --max_seq_len $MAX_LEN \
   --port $PORT
