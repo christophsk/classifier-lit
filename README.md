@@ -37,7 +37,7 @@ The easiest way is to use bash script `clf_lit.sh`.
 The script takes two arguments, the data `.csv` and the model name or path:
 
 ```bash
-./clf_lit.sh text.csv model-name-or-path
+./start_lit.sh text.csv model-name-or-path
 ```
 
 The default content root is `$HOME/classifier-lit`. Update as required
@@ -95,26 +95,29 @@ Start the server on the remote and view the results in your local browser.
 
 ## Usage
 ```
-usage: python clf_lit.py [-h] [--absl_flags ABSL_FLAGS] --model_path
-                                MODEL_PATH --data_path DATA_PATH
-                                [--batch_size BATCH_SIZE]
-                                [--max_seq_len MAX_SEQ_LEN] [--port PORT]
+usage: clf_server.py [-h] --model_path MODEL_PATH --data_path DATA_PATH 
+                     [--label_text_cols LABEL_TEXT_COLS] 
+                     [--batch_size BATCH_SIZE] [--max_seq_len MAX_SEQ_LEN]
+                     [--port PORT] [--notebook] [--height HEIGHT]
 
 Start the LIT server
 
 optional arguments:
   -h, --help            show this help message and exit
-  --absl_flags ABSL_FLAGS
-                        absl flags - defaults to []
   --model_path MODEL_PATH
-                        model name or path of the pytorch model
+                        tar.gz, name, or directory of the pytorch model
   --data_path DATA_PATH
-                        path + file.csv, for input data .csv
+                        path + file.csv, for the data .csv
+  --label_text_cols LABEL_TEXT_COLS
+                        python-style list of the label index and text index in 
+                        the .csv, default=[0,1]
   --batch_size BATCH_SIZE
                         batch size, default 8
   --max_seq_len MAX_SEQ_LEN
-                        maximum sequence length up to 512, default 128
-  --port PORT           LIT server port, default 5432
+                        maximum sequence length up to 512, default=128
+  --port PORT           LIT server port, default=5432
+  --notebook            LIT widget for Jupyter notebooks
+  --height HEIGHT       height for the rendered notebook widget
 ```
 
 # License

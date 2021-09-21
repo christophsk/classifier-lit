@@ -92,6 +92,7 @@ class TextClassifier(lit_model.Model):
             logger.exception(
                 "failed to load the model - {}: {}".format(type(e), str(e))
             )
+            raise
         self.model.eval()
 
     # LIT API implementation

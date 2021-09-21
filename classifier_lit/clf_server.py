@@ -24,6 +24,7 @@
 # https://github.com/PAIR-code/lit
 # lit-nlp is licensed under the Apache License Version 2.0
 import os
+import json
 
 import transformers as trf
 from absl import app
@@ -42,7 +43,10 @@ FLAGS = flags.FLAGS
 def main(_):
     data_csv = FLAGS.data_path
     model_path = FLAGS.model_path
+    label_txt = FLAGS.lbl_txt_cols
 
+    if False in [isinstance(col, int) for col in label_txt]:
+        raise ValueError("lbl_txt_cols must all be integers")
     # TODO test .tar.gz model files
     try:
         model_path = trf.file_utils.cached_path(
@@ -56,7 +60,7 @@ def main(_):
 
     lit_class = TextClassifier(model_path)
     models = {"classifier": lit_class}
-    datasets = {"data": ClfDataset(data_csv, lit_class.LABELS)}
+    datasets = {"data": ClfDataset(data_csv, lit_class.LABELS, label_txt)}
 
     # direct LIT to a notebook or start the server
     if FLAGS.notebook:
@@ -94,6 +98,13 @@ if __name__ == "__main__":
         help="path + file.csv, for the data .csv",
     )
     parser.add_argument(
+        "--label_text_cols",
+        dest="label_text_cols",
+        type=str,
+        help="python-style list of the label index and text index in the .csv",
+        default="[0,1]",
+    )
+    parser.add_argument(
         "--batch_size",
         dest="batch_size",
         type=str,
@@ -107,14 +118,14 @@ if __name__ == "__main__":
         type=int,
         required=False,
         default=128,
-        help="maximum sequence length up to 512, default 128",
+        help="maximum sequence length up to 512, default=128",
     )
     parser.add_argument(
         "--port",
         dest="port",
         type=int,
         default=5432,
-        help="LIT server port, default 5432",
+        help="LIT server port, default=5432",
     )
     parser.add_argument(
         "--notebook",
@@ -128,17 +139,21 @@ if __name__ == "__main__":
         type=int,
         default=800,
         required=False,
-        help="height for the notebook widget",
+        help="height for the rendered notebook widget",
     )
 
     parser.add_help = True
     args_in = parser.parse_args()
+
     flags.DEFINE_string("model_path", args_in.model_path, "saved model")
     flags.DEFINE_string("data_path", args_in.data_path, "validation data")
     flags.DEFINE_integer("batch_size", args_in.batch_size, "batch size")
     flags.DEFINE_integer("max_seq_len", args_in.max_seq_len, "max seq length")
     flags.DEFINE_bool("notebook", args_in.notebook, "notebook widget")
     flags.DEFINE_integer("height", args_in.height, "height if in a notebook")
+
+    lbl_txt_cols = json.loads(args_in.label_text_cols)
+    flags.DEFINE_list("lbl_txt_cols", lbl_txt_cols, "column indexes for label and text")
     flags.port = args_in.port
     flags.absl_flags = []
 
