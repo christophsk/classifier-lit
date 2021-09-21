@@ -16,16 +16,11 @@ pip install -r requirements.txt
 ## Model
 A model name or path for a `transformers` SequenceClassification model. 
 This can be a path to your (`pytorch`) trained model or the name an appropriate
-model from [HuggingFace models](https://huggingface.co/models). You will need
-to know the number of classification labels in your model.
+model from [HuggingFace models](https://huggingface.co/models).
 
 ### Data
-The data is a `.csv`,  ideally consisting of validation data, with columns
-```
-"src", "label", "sentence"
-```
-`src` is a user-specific identifier, `label` is the validation label, and `sentence` is the text to be classified.
-Modify `clf_dataset.py` as appropriate to conform to the expected format.
+The data is a `.csv`,  ideally consisting of validation data, with one column
+holding the validation label and one column holding the text. 
 
 If the validation label is not known, use 0 (zero). 
 The metrics will be meaningless, but all the other LIT features are
@@ -33,24 +28,25 @@ available.
 
 ## Starting the Server
 
-The easiest way is to use bash script `clf_lit.sh`. 
-The script takes two arguments, the data `.csv` and the model name or path:
+The easiest way is to use example bash script `start_lit.sh`. 
+The script takes three arguments:
+
+- The `.csv` file with the data.
+
+- The column indexes of the label and text in Python-style
+syntax, e.g., [0,1] (no spaces).
+  
+- The model directory or a model name.
+
+### Example
+Using the sentiment example in`examples/dava.csv` with the HuggingFace 
+model [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion)
 
 ```bash
-./start_lit.sh text.csv model-name-or-path
+./start_lit.sh ./classifier_lit/examples/data.csv [1,0] bhadresh-savani/distilbert-base-uncased-emotion
 ```
-
-The default content root is `$HOME/classifier-lit`. Update as required
-for your environment.
-
-```bash
-python clf_lit.py \
-    --data_path data.csv \
-    --model_path model-name-or-path \
-    --batch_size 8 \
-    --max_seq_len 128 \
-    --port 5432
-```
+Note the label is in column 1 and the text in column 0. The chances are good that you don't have
+this model locally, so it will be downloaded and cached for you.
 
 After a short wait, you should see
 ```
@@ -98,7 +94,7 @@ Start the server on the remote and view the results in your local browser.
 usage: clf_server.py [-h] --model_path MODEL_PATH --data_path DATA_PATH 
                      [--label_text_cols LABEL_TEXT_COLS] 
                      [--batch_size BATCH_SIZE] [--max_seq_len MAX_SEQ_LEN]
-                     [--port PORT] [--notebook] [--height HEIGHT]
+                     [--port PORT]
 
 Start the LIT server
 
@@ -110,14 +106,12 @@ optional arguments:
                         path + file.csv, for the data .csv
   --label_text_cols LABEL_TEXT_COLS
                         python-style list of the label index and text index in 
-                        the .csv, default=[0,1]
+                        the .csv
   --batch_size BATCH_SIZE
-                        batch size, default 8
+                        batch size, default=8
   --max_seq_len MAX_SEQ_LEN
                         maximum sequence length up to 512, default=128
   --port PORT           LIT server port, default=5432
-  --notebook            LIT widget for Jupyter notebooks
-  --height HEIGHT       height for the rendered notebook widget
 ```
 
 # License

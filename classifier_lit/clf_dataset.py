@@ -34,14 +34,15 @@ logger = logging.getLogger(__name__)
 
 
 class ClfDataset(lit_dataset.Dataset):
-    def __init__(self, data_path: str, labels: List[str], lbl_txt_cols=None):
+    def __init__(
+            self, data_path: str, labels: List[str], lbl_txt_cols: List[int]
+    ):
         super().__init__()
         if not os.path.isfile(data_path):
             raise FileNotFoundError(data_path)
 
         self.LABELS = labels
         self._examples = list()
-        lbl_txt_cols = [1, 2]
 
         try:
             df = pd.read_csv(
@@ -50,12 +51,16 @@ class ClfDataset(lit_dataset.Dataset):
                 header=None,
                 usecols=lbl_txt_cols,
             )
-            df.columns = ["label", "text"]
+
+            if lbl_txt_cols[0] > lbl_txt_cols[1]:
+                df.columns = ["text", "label"]
+            else:
+                df.columns = ["label", "text"]
         except (pd_err.ParserError, pd_err.EmptyDataError) as e:
             raise e
 
-        nl = len(df.label.unique())
-        logger.info("rows: {:,d}  unique labels: {}".format(len(df), nl))
+        logger.info("         rows: {:>4,d}".format(len(df)))
+        logger.info("unique labels: {:>4,d}".format(len(df.label.unique())))
 
         self._examples = [
             {
