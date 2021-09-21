@@ -23,15 +23,14 @@
 # This was assembled from various examples in
 # https://github.com/PAIR-code/lit
 # lit-nlp is licensed under the Apache License Version 2.0
-import os
 import json
+import os
 
 import transformers as trf
 from absl import app
 from absl import flags
 from absl import logging
 from lit_nlp import dev_server
-from lit_nlp import notebook
 from lit_nlp import server_flags
 
 from classifier_lit.clf_dataset import ClfDataset
@@ -43,33 +42,30 @@ FLAGS = flags.FLAGS
 def main(_):
     data_csv = FLAGS.data_path
     model_path = FLAGS.model_path
-    label_txt = FLAGS.lbl_txt_cols
+    label_txt_cols = FLAGS.label_text_cols
 
-    if False in [isinstance(col, int) for col in label_txt]:
-        raise ValueError("lbl_txt_cols must all be integers")
+    lbl_txt_cols = json.loads(label_txt_cols)
+
     # TODO test .tar.gz model files
-    try:
-        model_path = trf.file_utils.cached_path(
-            model_path, extract_compressed_file=True
-        )
-    except (OSError, EnvironmentError):
-        pass
+    if model_path.endswith(".tar.gz"):
+        try:
+            model_path = trf.file_utils.cached_path(
+                model_path, extract_compressed_file=True
+            )
+        except (OSError, EnvironmentError) as e:
+            raise e
 
     if not os.path.isfile(data_csv):
         raise FileNotFoundError(data_csv)
 
     lit_class = TextClassifier(model_path)
     models = {"classifier": lit_class}
-    datasets = {"data": ClfDataset(data_csv, lit_class.LABELS, label_txt)}
+    datasets = {"data": ClfDataset(data_csv, lit_class.LABELS, lbl_txt_cols)}
 
-    # direct LIT to a notebook or start the server
-    if FLAGS.notebook:
-        return notebook.LitWidget(models, datasets, height=FLAGS.height)
-    else:
-        lit_server = dev_server.Server(
-            models, datasets, **server_flags.get_flags()
-        )
-        lit_server.serve()
+    lit_server = dev_server.Server(
+        models, datasets, **server_flags.get_flags()
+    )
+    lit_server.serve()
 
 
 if __name__ == "__main__":
@@ -95,14 +91,14 @@ if __name__ == "__main__":
         dest="data_path",
         type=str,
         required=True,
-        help="path + file.csv, for the data .csv",
+        help="path + data.csv, for the data .csv",
     )
     parser.add_argument(
         "--label_text_cols",
         dest="label_text_cols",
         type=str,
+        required=True,
         help="python-style list of the label index and text index in the .csv",
-        default="[0,1]",
     )
     parser.add_argument(
         "--batch_size",
@@ -127,20 +123,6 @@ if __name__ == "__main__":
         default=5432,
         help="LIT server port, default=5432",
     )
-    parser.add_argument(
-        "--notebook",
-        dest="notebook",
-        action="store_true",
-        help="LIT widget for Jupyter notebooks",
-    )
-    parser.add_argument(
-        "--height",
-        dest="height",
-        type=int,
-        default=800,
-        required=False,
-        help="height for the rendered notebook widget",
-    )
 
     parser.add_help = True
     args_in = parser.parse_args()
@@ -149,11 +131,9 @@ if __name__ == "__main__":
     flags.DEFINE_string("data_path", args_in.data_path, "validation data")
     flags.DEFINE_integer("batch_size", args_in.batch_size, "batch size")
     flags.DEFINE_integer("max_seq_len", args_in.max_seq_len, "max seq length")
-    flags.DEFINE_bool("notebook", args_in.notebook, "notebook widget")
-    flags.DEFINE_integer("height", args_in.height, "height if in a notebook")
-
-    lbl_txt_cols = json.loads(args_in.label_text_cols)
-    flags.DEFINE_list("lbl_txt_cols", lbl_txt_cols, "column indexes for label and text")
+    flags.DEFINE_string(
+        "label_text_cols", args_in.label_text_cols, "column indexes for label and text",  # noqa
+    )
     flags.port = args_in.port
     flags.absl_flags = []
 

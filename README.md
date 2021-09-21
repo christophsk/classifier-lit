@@ -3,8 +3,8 @@
 
 This app is an implementation of the
 [Language Interpretability Tool](https://pair-code.github.io/lit/) for text classification.
-This was assembled from examples in LIT to provide an easy-to-use way to
-try various features of LIT.
+This was assembled from examples in LIT a way to
+experiment with various features of LIT.
 
 Contributions are welcome.
 
@@ -13,19 +13,20 @@ Contributions are welcome.
 pip install -r requirements.txt
 ```
 
+## Quickstart
+From the `classifier-lit` directory, run the bash script
+```bash
+./run_example.sh
+```
+
 ## Model
 A model name or path for a `transformers` SequenceClassification model. 
 This can be a path to your (`pytorch`) trained model or the name an appropriate
-model from [HuggingFace models](https://huggingface.co/models). You will need
-to know the number of classification labels in your model.
+model from [HuggingFace models](https://huggingface.co/models).
 
-### Data
-The data is a `.csv`,  ideally consisting of validation data, with columns
-```
-"src", "label", "sentence"
-```
-`src` is a user-specific identifier, `label` is the validation label, and `sentence` is the text to be classified.
-Modify `clf_dataset.py` as appropriate to conform to the expected format.
+## Data
+The data is a `.csv`,  ideally consisting of validation data, with one column
+holding the validation label and one column holding the text. 
 
 If the validation label is not known, use 0 (zero). 
 The metrics will be meaningless, but all the other LIT features are
@@ -33,26 +34,31 @@ available.
 
 ## Starting the Server
 
-The easiest way is to use bash script `clf_lit.sh`. 
-The script takes two arguments, the data `.csv` and the model name or path:
+The easiest way is to use example bash script `start_lit.sh`. 
+The script takes three arguments:
 
+- The `.csv` file with the data.
+
+- The column indexes of the label and text in Python-style
+syntax, e.g., [0,1] (no spaces).
+  
+- The model directory or a model name.
+
+### Example
+The bash script `run_example.sh` starts the server for a sentiment
+analysis example. The data is in `examples/dava.csv` and the model is from the HuggingFace 
+model site [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion).
+If you don't have the model cached, it will be automatically downloaded.
+
+From the `classifier-lit` directory:
 ```bash
-./start_lit.sh text.csv model-name-or-path
+./run_example.sh
 ```
-
-The default content root is `$HOME/classifier-lit`. Update as required
-for your environment.
-
-```bash
-python clf_lit.py \
-    --data_path data.csv \
-    --model_path model-name-or-path \
-    --batch_size 8 \
-    --max_seq_len 128 \
-    --port 5432
+You should see
 ```
-
-After a short wait, you should see
+starting LIT...
+```
+and after a wait
 ```
 I0604 16:10:49.734775 139835092129600 classifier_lit.py:75] model loaded
 I0604 16:10:49.742584 139835092129600 gc_dataset.py:22] rows : 371
@@ -98,7 +104,7 @@ Start the server on the remote and view the results in your local browser.
 usage: clf_server.py [-h] --model_path MODEL_PATH --data_path DATA_PATH 
                      [--label_text_cols LABEL_TEXT_COLS] 
                      [--batch_size BATCH_SIZE] [--max_seq_len MAX_SEQ_LEN]
-                     [--port PORT] [--notebook] [--height HEIGHT]
+                     [--port PORT]
 
 Start the LIT server
 
@@ -110,14 +116,12 @@ optional arguments:
                         path + file.csv, for the data .csv
   --label_text_cols LABEL_TEXT_COLS
                         python-style list of the label index and text index in 
-                        the .csv, default=[0,1]
+                        the .csv
   --batch_size BATCH_SIZE
-                        batch size, default 8
+                        batch size, default=8
   --max_seq_len MAX_SEQ_LEN
                         maximum sequence length up to 512, default=128
   --port PORT           LIT server port, default=5432
-  --notebook            LIT widget for Jupyter notebooks
-  --height HEIGHT       height for the rendered notebook widget
 ```
 
 # License
