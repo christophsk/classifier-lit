@@ -3,8 +3,8 @@
 
 This app is an implementation of the
 [Language Interpretability Tool](https://pair-code.github.io/lit/) for text classification.
-This was assembled from examples in LIT to provide an easy-to-use way to
-try various features of LIT.
+This was assembled from examples in LIT a way to
+experiment with various features of LIT.
 
 Contributions are welcome.
 
@@ -13,12 +13,22 @@ Contributions are welcome.
 pip install -r requirements.txt
 ```
 
+## Quickstart
+From the `classifier-lit` directory, run the bash script
+```bash
+./run_demo.sh
+```
+
 ## Model
 A model name or path for a `transformers` SequenceClassification model. 
 This can be a path to your (`pytorch`) trained model or the name an appropriate
 model from [HuggingFace models](https://huggingface.co/models).
 
+<<<<<<< HEAD
 ### Data
+=======
+## Data
+>>>>>>> dev
 The data is a `.csv`,  ideally consisting of validation data, with one column
 holding the validation label and one column holding the text. 
 
@@ -39,16 +49,34 @@ syntax, e.g., [0,1] (no spaces).
 - The model directory or a model name.
 
 ### Example
+<<<<<<< HEAD
 Using the sentiment example in`examples/dava.csv` with the HuggingFace 
 model [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion)
+=======
+The bash script `run_example.sh` starts the server for a sentiment
+analysis example. The data is in `examples/dava.csv` and the model is from the HuggingFace 
+model site [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion).
+If you don't have the model cached, it will be automatically downloaded.
+>>>>>>> dev
 
+From the `classifier-lit` directory:
 ```bash
+<<<<<<< HEAD
 ./start_lit.sh ./classifier_lit/examples/data.csv [1,0] bhadresh-savani/distilbert-base-uncased-emotion
 ```
 Note the label is in column 1 and the text in column 0. The chances are good that you don't have
 this model locally, so it will be downloaded and cached for you.
 
 After a short wait, you should see
+=======
+./run_example.sh
+```
+You should see
+```
+starting LIT...
+```
+and after a wait
+>>>>>>> dev
 ```
 I0604 16:10:49.734775 139835092129600 classifier_lit.py:75] model loaded
 I0604 16:10:49.742584 139835092129600 gc_dataset.py:22] rows : 371
