@@ -84,7 +84,7 @@ class SeqModel(lit_model.Model):
             self.LABELS = list(map(str, self.id2label.keys()))
             self.architectures = ",".join(model_config.architectures)
             logging.info(
-                "{} loaded with {} labels".format(
+                "{} loaded for {} labels".format(
                     self.architectures, len(self.LABELS)
                 )
             )

@@ -5,27 +5,25 @@
 This is an implementation of the
 [Language Interpretability Tool](https://pair-code.github.io/lit/) for text classification.
 This was assembled from examples in LIT as a way to
-experiment with various features of LIT.
-
-Contributions are welcome.
+experiment with various features of LIT. See the [LIT User's Guide](https://github.com/PAIR-code/lit/blob/main/documentation/user_guide.md)
+for more information.
 
 ## Quickstart
-Install the requirement
+Install the requirements,
 ```
 pip install -r requirements
 ```
-and run the bash script
+run the (`bash`) script
 ```bash
 ./run_demo.sh
 ```
-The required `pytorch` model will be downloaded if it's not cached:
+The required `pytorch` model files will be downloaded if they are not cached
 ```
-starting LIT...
-
-I0924 18:08:23.693949 8638660096 clf_lit.py:87] DistilBertForSequenceClassification loaded with 6 labels
-I0924 18:08:23.699791 8638660096 clf_dataset.py:62]          rows:   20
-I0924 18:08:23.701267 8638660096 clf_dataset.py:63] unique labels:    3
-I0924 18:08:23.702405 8638660096 dev_server.py:88]
+starting LIT server, model bhadresh-savani/distilbert-base-uncased-emotion
+I0925 13:49:29.168361 8637451776 seq_model.py:86] DistilBertForSequenceClassification loaded for 6 labels
+I0925 13:49:29.175712 8637451776 seq_dataset.py:62]          rows:   20
+I0925 13:49:29.180124 8637451776 seq_dataset.py:63] unique labels:    3
+I0925 13:49:29.181498 8637451776 dev_server.py:88]
  (    (
  )\ ) )\ )  *   )
 (()/((()/(` )  /(
@@ -36,14 +34,17 @@ I0924 18:08:23.702405 8638660096 dev_server.py:88]
 |____|___|  |_|
 
 
-I0924 18:08:23.702445 8638660096 dev_server.py:89] Starting LIT server...
-I0924 18:08:23.702483 8638660096 caching.py:124] CachingModelWrapper 'classifier': no cache path specified, not loading.
-I0924 18:08:23.702863 8638660096 gradient_maps.py:120] Skipping token_grad_sentence since embeddings field not found.
-I0924 18:08:23.702914 8638660096 gradient_maps.py:235] Skipping token_grad_sentence since embeddings field not found.
-I0924 18:08:23.703096 8638660096 wsgi_serving.py:41]
+I0925 13:49:29.181543 8637451776 dev_server.py:89] Starting LIT server...
+I0925 13:49:29.181587 8637451776 caching.py:124] CachingModelWrapper 'classifier': no cache path specified, not loading.
+I0925 13:49:29.182018 8637451776 gradient_maps.py:120] Skipping token_grad_sentence since embeddings field not found.
+I0925 13:49:29.182076 8637451776 gradient_maps.py:235] Skipping token_grad_sentence since embeddings field not found.
+I0925 13:49:29.182271 8637451776 wsgi_serving.py:41]
 
 Starting Server on port 5432
 You can navigate to 127.0.0.1:5432
+
+
+I0925 13:49:29.183076 8637451776 _internal.py:225]  * Running on http://127.0.0.1:5432/ (Press CTRL+C to quit)
 ```
 
 Open LIT in your browser
