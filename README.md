@@ -24,7 +24,7 @@ starting LIT...
 
 I0924 18:08:23.693949 8638660096 clf_lit.py:87] DistilBertForSequenceClassification loaded with 6 labels
 I0924 18:08:23.699791 8638660096 clf_dataset.py:62]          rows:   20
-I0924 18:08:23.701267 8638660096 clf_dataset.py:63] unique labels:    2
+I0924 18:08:23.701267 8638660096 clf_dataset.py:63] unique labels:    3
 I0924 18:08:23.702405 8638660096 dev_server.py:88]
  (    (
  )\ ) )\ )  *   )

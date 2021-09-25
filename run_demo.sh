@@ -3,7 +3,7 @@
 export PROJECT=../classifier-lit
 
 # data
-export DATA=$PROJECT/classifier_lit/static/data.csv
+export DATA=$PROJECT/classifier_lit/static/twitter.csv
 export COLS=[1,0]
 
 # model params
