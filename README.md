@@ -1,9 +1,11 @@
 # 🔥 `classifier-lit`
 ## The Language Interpretability Tool (LIT) for Text Classification
 
-This app is an implementation of the
+![](classifier_lit/static/demo.png)
+
+This is an implementation of the
 [Language Interpretability Tool](https://pair-code.github.io/lit/) for text classification.
-This was assembled from examples in LIT a way to
+It was assembled from examples in LIT as a way to
 experiment with various features of LIT.
 
 Contributions are welcome.
@@ -18,69 +20,14 @@ From the `classifier-lit` directory, run the bash script
 ```bash
 ./run_demo.sh
 ```
-
-## Model
-A model name or path for a `transformers` SequenceClassification model. 
-This can be a path to your (`pytorch`) trained model or the name an appropriate
-model from [HuggingFace models](https://huggingface.co/models).
-
-<<<<<<< HEAD
-### Data
-=======
-## Data
->>>>>>> dev
-The data is a `.csv`,  ideally consisting of validation data, with one column
-holding the validation label and one column holding the text. 
-
-If the validation label is not known, use 0 (zero). 
-The metrics will be meaningless, but all the other LIT features are
-available.
-
-## Starting the Server
-
-The easiest way is to use example bash script `start_lit.sh`. 
-The script takes three arguments:
-
-- The `.csv` file with the data.
-
-- The column indexes of the label and text in Python-style
-syntax, e.g., [0,1] (no spaces).
-  
-- The model directory or a model name.
-
-### Example
-<<<<<<< HEAD
-Using the sentiment example in`examples/dava.csv` with the HuggingFace 
-model [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion)
-=======
-The bash script `run_example.sh` starts the server for a sentiment
-analysis example. The data is in `examples/dava.csv` and the model is from the HuggingFace 
-model site [bhadresh-savani/distilbert-base-uncased-emotion](https://huggingface.co/bhadresh-savani/distilbert-base-uncased-emotion).
-If you don't have the model cached, it will be automatically downloaded.
->>>>>>> dev
-
-From the `classifier-lit` directory:
-```bash
-<<<<<<< HEAD
-./start_lit.sh ./classifier_lit/examples/data.csv [1,0] bhadresh-savani/distilbert-base-uncased-emotion
-```
-Note the label is in column 1 and the text in column 0. The chances are good that you don't have
-this model locally, so it will be downloaded and cached for you.
-
-After a short wait, you should see
-=======
-./run_example.sh
-```
-You should see
+After a short wait
 ```
 starting LIT...
-```
-and after a wait
->>>>>>> dev
-```
-I0604 16:10:49.734775 139835092129600 classifier_lit.py:75] model loaded
-I0604 16:10:49.742584 139835092129600 gc_dataset.py:22] rows : 371
-I0604 16:10:49.805324 139835092129600 dev_server.py:88]
+
+I0924 18:08:23.693949 8638660096 clf_lit.py:87] DistilBertForSequenceClassification loaded with 6 labels
+I0924 18:08:23.699791 8638660096 clf_dataset.py:62]          rows:   20
+I0924 18:08:23.701267 8638660096 clf_dataset.py:63] unique labels:    2
+I0924 18:08:23.702405 8638660096 dev_server.py:88]
  (    (
  )\ ) )\ )  *   )
 (()/((()/(` )  /(
@@ -91,20 +38,31 @@ I0604 16:10:49.805324 139835092129600 dev_server.py:88]
 |____|___|  |_|
 
 
-I0604 16:10:49.805436 139835092129600 dev_server.py:89] Starting LIT server...
-I0604 16:10:49.805539 139835092129600 caching.py:125] CachingModelWrapper 'distilbert': no cache path specified, not loading.
-I0604 16:10:49.810200 139835092129600 gradient_maps.py:120] Skipping token_grad_sentence since embeddings field not found.
-I0604 16:10:49.810353 139835092129600 gradient_maps.py:235] Skipping token_grad_sentence since embeddings field not found.
-I0604 16:10:49.810859 139835092129600 wsgi_serving.py:43]
+I0924 18:08:23.702445 8638660096 dev_server.py:89] Starting LIT server...
+I0924 18:08:23.702483 8638660096 caching.py:124] CachingModelWrapper 'classifier': no cache path specified, not loading.
+I0924 18:08:23.702863 8638660096 gradient_maps.py:120] Skipping token_grad_sentence since embeddings field not found.
+I0924 18:08:23.702914 8638660096 gradient_maps.py:235] Skipping token_grad_sentence since embeddings field not found.
+I0924 18:08:23.703096 8638660096 wsgi_serving.py:41]
 
 Starting Server on port 5432
 You can navigate to 127.0.0.1:5432
+```
 
+Open LIT in your browser
 
-I0604 16:10:49.811561 139835092129600 _internal.py:122]  * Running on http://127.0.0.1:5432/ (Press CTRL+C to quit)
-``` 
+## Model
+A model name or path for a `transformers` SequenceClassification model. 
+This can be a path to your (`pytorch`) trained model or the name an appropriate
+model from [HuggingFace models](https://huggingface.co/models).
 
-## Notebook Example
+## Data
+The data is a `.csv`,  ideally consisting of validation data, with one column
+for the text and the other validation label. 
+
+If the validation label is not known, use 0 (zero). 
+The metrics will be meaningless, but all the other LIT features are
+available.
+
 
 ## Using a GPU
 A GPU is automatically detected and used.
@@ -117,10 +75,10 @@ ssh -i access-creds.pem -L 5432:localhost:5432 <your id>@<remote IP address>
 
 Start the server on the remote and view the results in your local browser.
 
-## Usage
+## Commandline Usage
 ```
-usage: clf_server.py [-h] --model_path MODEL_PATH --data_path DATA_PATH 
-                     [--label_text_cols LABEL_TEXT_COLS] 
+usage: seq_server.py [-h] --model_path MODEL_PATH --data_path DATA_PATH
+                     --label_text_cols LABEL_TEXT_COLS
                      [--batch_size BATCH_SIZE] [--max_seq_len MAX_SEQ_LEN]
                      [--port PORT]
 
@@ -133,8 +91,8 @@ optional arguments:
   --data_path DATA_PATH
                         path + file.csv, for the data .csv
   --label_text_cols LABEL_TEXT_COLS
-                        python-style list of the label index and text index in 
-                        the .csv
+                        python-style list of indexes [label-index, text-index]
+                        in the .csv
   --batch_size BATCH_SIZE
                         batch size, default=8
   --max_seq_len MAX_SEQ_LEN

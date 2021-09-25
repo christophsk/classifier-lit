@@ -44,7 +44,7 @@ def _from_pretrained(cls, *args, **kw):
         raise e
 
 
-class TextClassifier(lit_model.Model):
+class SeqModel(lit_model.Model):
     compute_grads: bool = True
 
     def __init__(

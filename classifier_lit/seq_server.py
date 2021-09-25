@@ -34,7 +34,7 @@ from lit_nlp import dev_server
 from lit_nlp import server_flags
 
 from classifier_lit.clf_dataset import ClfDataset
-from classifier_lit.clf_lit import TextClassifier
+from classifier_lit.seq_model import SeqModel
 
 FLAGS = flags.FLAGS
 
@@ -57,7 +57,7 @@ def main(_):
     if not os.path.isfile(data_csv):
         raise FileNotFoundError(data_csv)
 
-    lit_class = TextClassifier(model_path)
+    lit_class = SeqModel(model_path)
     models = {"classifier": lit_class}
     datasets = {"data": ClfDataset(data_csv, lit_class.LABELS, lbl_txt_cols)}
 
@@ -97,7 +97,8 @@ if __name__ == "__main__":
         dest="label_text_cols",
         type=str,
         required=True,
-        help="python-style list of the label index and text index in the .csv",
+        help="python-style list of indexes [label-index, text-index] "
+             "in the .csv",
     )
     parser.add_argument(
         "--batch_size",
@@ -105,7 +106,7 @@ if __name__ == "__main__":
         type=str,
         required=False,
         default=8,
-        help="batch size, default 8",
+        help="batch size, default=8",
     )
     parser.add_argument(
         "--max_seq_len",
