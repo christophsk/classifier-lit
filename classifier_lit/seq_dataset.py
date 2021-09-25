@@ -23,12 +23,12 @@
 # lit-nlp is licensed under the Apache License Version 2.0
 import logging
 import os
-from typing import List
 
 import pandas as pd
 import pandas.errors as pd_err
 from lit_nlp.api import dataset as lit_dataset
 from lit_nlp.api import types as lit_types
+from typing import List
 
 logger = logging.getLogger(__name__)
 

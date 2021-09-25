@@ -33,7 +33,7 @@ from absl import logging
 from lit_nlp import dev_server
 from lit_nlp import server_flags
 
-from classifier_lit.clf_dataset import ClfDataset
+from classifier_lit.seq_dataset import ClfDataset
 from classifier_lit.seq_model import SeqModel
 
 FLAGS = flags.FLAGS

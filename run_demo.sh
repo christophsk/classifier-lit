@@ -2,19 +2,20 @@
 
 export PROJECT=../classifier-lit
 
-# Data
+# data
 export DATA=$PROJECT/classifier_lit/static/data.csv
 export COLS=[1,0]
 
-# Server
+# model params
 export MODEL=bhadresh-savani/distilbert-base-uncased-emotion
 export PORT=5432
 export BSZ=8
 export MAX_LEN=128
 
-export LIT=$PROJECT/classifier_lit/clf_server.py
+export LIT=$PROJECT/classifier_lit/seq_server.py
 
-echo "starting LIT..."
+echo ""
+echo "starting LIT server, model $MODEL"
 export PYTHONPATH=.
 python $LIT \
   --model_path $MODEL \

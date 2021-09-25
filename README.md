@@ -1,26 +1,24 @@
-# 🔥 `classifier-lit`
-## The Language Interpretability Tool (LIT) for Text Classification
+# 🔥 `classifier-lit` The Language Interpretability Tool (LIT) for Text Classification
 
 ![](classifier_lit/static/demo.png)
 
 This is an implementation of the
 [Language Interpretability Tool](https://pair-code.github.io/lit/) for text classification.
-It was assembled from examples in LIT as a way to
+This was assembled from examples in LIT as a way to
 experiment with various features of LIT.
 
 Contributions are welcome.
 
-## Requirements
-```
-pip install -r requirements.txt
-```
-
 ## Quickstart
-From the `classifier-lit` directory, run the bash script
+Install the requirement
+```
+pip install -r requirements
+```
+and run the bash script
 ```bash
 ./run_demo.sh
 ```
-After a short wait
+The required `pytorch` model will be downloaded if it's not cached:
 ```
 starting LIT...
 
@@ -101,7 +99,7 @@ optional arguments:
 ```
 
 # License
-MIT License Copyright (c) 2021 Chris Skiscim
+MIT License Copyright &copy; 2021 Chris Skiscim
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
