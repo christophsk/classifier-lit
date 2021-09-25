@@ -3,8 +3,8 @@
 ![](classifier_lit/static/demo.png)
 
 This is an implementation of the
-[Language Interpretability Tool](https://pair-code.github.io/lit/) for text classification.
-This was assembled from examples in LIT as a way to
+[PAIR-code Language Interpretability Tool](https://pair-code.github.io/lit/) for text classification.
+This was assembled from examples as a way to
 experiment with various features of LIT. See the [LIT User's Guide](https://github.com/PAIR-code/lit/blob/main/documentation/user_guide.md)
 for more information.
 
@@ -47,7 +47,7 @@ You can navigate to 127.0.0.1:5432
 I0925 13:49:29.183076 8637451776 _internal.py:225]  * Running on http://127.0.0.1:5432/ (Press CTRL+C to quit)
 ```
 
-Open LIT in your browser
+Paste `127.0.0.1:5432` into your browser. 
 
 ## Model
 A model name or path for a `transformers` SequenceClassification model. 
@@ -66,13 +66,14 @@ available.
 ## Using a GPU
 A GPU is automatically detected and used.
 If your GPU instance is a remote, headless cloud instance, you can still
-use your local browser by using port forwarding feature of SSH. For port 5432:
+use your local browser by using port forwarding feature of SSH. For 
+the default port 5432:
 
 ```
 ssh -i access-creds.pem -L 5432:localhost:5432 <your id>@<remote IP address>
 ```
 
-Start the server on the remote and view the results in your local browser.
+Start the server on the remote and then view the results in your local browser.
 
 ## Commandline Usage
 ```
