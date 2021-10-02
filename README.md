@@ -19,11 +19,11 @@ run the (`bash`) script
 ```
 The required `pytorch` model files will be downloaded if they are not cached
 ```
-starting LIT server, model bhadresh-savani/distilbert-base-uncased-emotion
-I0925 13:49:29.168361 8637451776 seq_model.py:86] DistilBertForSequenceClassification loaded for 6 labels
-I0925 13:49:29.175712 8637451776 seq_dataset.py:62]          rows:   20
-I0925 13:49:29.180124 8637451776 seq_dataset.py:63] unique labels:    3
-I0925 13:49:29.181498 8637451776 dev_server.py:88]
+starting LIT server, model cardiffnlp/twitter-roberta-base-sentiment
+I0925 15:00:12.167857 8647302656 seq_model.py:86] RobertaForSequenceClassification loaded for 3 labels
+I0925 15:00:12.174917 8647302656 seq_dataset.py:62]          rows:   20
+I0925 15:00:12.176527 8647302656 seq_dataset.py:63] unique labels:    3
+I0925 15:00:12.177896 8647302656 dev_server.py:88]
  (    (
  )\ ) )\ )  *   )
 (()/((()/(` )  /(
@@ -34,17 +34,17 @@ I0925 13:49:29.181498 8637451776 dev_server.py:88]
 |____|___|  |_|
 
 
-I0925 13:49:29.181543 8637451776 dev_server.py:89] Starting LIT server...
-I0925 13:49:29.181587 8637451776 caching.py:124] CachingModelWrapper 'classifier': no cache path specified, not loading.
-I0925 13:49:29.182018 8637451776 gradient_maps.py:120] Skipping token_grad_sentence since embeddings field not found.
-I0925 13:49:29.182076 8637451776 gradient_maps.py:235] Skipping token_grad_sentence since embeddings field not found.
-I0925 13:49:29.182271 8637451776 wsgi_serving.py:41]
+I0925 15:00:12.177957 8647302656 dev_server.py:89] Starting LIT server...
+I0925 15:00:12.177999 8647302656 caching.py:124] CachingModelWrapper 'classifier': no cache path specified, not loading.
+I0925 15:00:12.178436 8647302656 gradient_maps.py:120] Skipping token_grad_sentence since embeddings field not found.
+I0925 15:00:12.178502 8647302656 gradient_maps.py:235] Skipping token_grad_sentence since embeddings field not found.
+I0925 15:00:12.178730 8647302656 wsgi_serving.py:41]
 
 Starting Server on port 5432
 You can navigate to 127.0.0.1:5432
 
 
-I0925 13:49:29.183076 8637451776 _internal.py:225]  * Running on http://127.0.0.1:5432/ (Press CTRL+C to quit)
+I0925 15:00:12.179692 8647302656 _internal.py:225]  * Running on http://127.0.0.1:5432/ (Press CTRL+C to quit)
 ```
 
 Paste `127.0.0.1:5432` into your browser. 

@@ -7,7 +7,7 @@ export DATA=$PROJECT/classifier_lit/static/twitter.csv
 export COLS=[1,0]
 
 # model params
-export MODEL=bhadresh-savani/distilbert-base-uncased-emotion
+export MODEL=cardiffnlp/twitter-roberta-base-sentiment
 export PORT=5432
 export BSZ=8
 export MAX_LEN=128
