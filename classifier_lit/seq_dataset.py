@@ -33,9 +33,9 @@ from typing import List
 logger = logging.getLogger(__name__)
 
 
-class ClfDataset(lit_dataset.Dataset):
+class SeqDataset(lit_dataset.Dataset):
     def __init__(
-            self, data_path: str, labels: List[str], lbl_txt_cols: List[int]
+        self, data_path: str, labels: List[str], lbl_txt_cols: List[int]
     ):
         super().__init__()
         if not os.path.isfile(data_path):
@@ -44,20 +44,7 @@ class ClfDataset(lit_dataset.Dataset):
         self.LABELS = labels
         self._examples = list()
 
-        try:
-            df = pd.read_csv(
-                data_path,
-                delimiter=",",
-                header=None,
-                usecols=lbl_txt_cols,
-            )
-
-            if lbl_txt_cols[0] > lbl_txt_cols[1]:
-                df.columns = ["text", "label"]
-            else:
-                df.columns = ["label", "text"]
-        except (pd_err.ParserError, pd_err.EmptyDataError) as e:
-            raise e
+        df = self.read_data(data_path, lbl_txt_cols)
 
         logger.info("         rows: {:>4,d}".format(len(df)))
         logger.info("unique labels: {:>4,d}".format(len(df.label.unique())))
@@ -75,3 +62,22 @@ class ClfDataset(lit_dataset.Dataset):
             "text": lit_types.TextSegment(),
             "label": lit_types.CategoryLabel(vocab=self.LABELS),
         }
+
+    @staticmethod
+    def read_data(data_path, lbl_txt_cols):
+        try:
+            if lbl_txt_cols[0] > lbl_txt_cols[1]:
+                columns = ["text", "label"]
+            else:
+                columns = ["label", "text"]
+
+            df = pd.read_csv(
+                data_path,
+                delimiter=",",
+                header=None,
+                usecols=lbl_txt_cols,
+                names=columns,
+            )
+            return df
+        except (pd_err.ParserError, pd_err.EmptyDataError) as e:
+            raise e

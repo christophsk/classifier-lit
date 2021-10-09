@@ -26,12 +26,14 @@
 import re
 
 import torch
+import torch.nn.functional as F
 import transformers as trf
 from absl import flags
 from absl import logging
 from lit_nlp.api import model as lit_model
 from lit_nlp.api import types as lit_types
 from lit_nlp.lib import utils
+from transformers.modeling_outputs import SequenceClassifierOutput
 
 FLAGS = flags.FLAGS
 logger = logging.get_absl_logger()
@@ -80,6 +82,9 @@ class SeqModel(lit_model.Model):
                 model_name_or_path,
                 config=model_config,
             )
+            if torch.cuda.is_available():
+                self.model.cuda()
+
             self.id2label = model_config.id2label
             self.LABELS = list(map(str, self.id2label.keys()))
             self.architectures = ",".join(model_config.architectures)
@@ -92,7 +97,7 @@ class SeqModel(lit_model.Model):
             logger.exception(
                 "failed to load the model - {}: {}".format(type(e), str(e))
             )
-            raise
+            raise e
         self.model.eval()
 
     # LIT API implementation
@@ -116,13 +121,11 @@ class SeqModel(lit_model.Model):
 
         # Run a forward pass with gradient.
         with torch.set_grad_enabled(self.compute_grads):
-            out: trf.modeling_outputs.SequenceClassifierOutput = self.model(
-                **encoded_input
-            )
+            out: SequenceClassifierOutput = self.model(**encoded_input)
 
         # Post-process outputs.
         batched_outputs = {
-            "probas": torch.nn.functional.softmax(out.logits, dim=-1),
+            "probas": F.softmax(out.logits, dim=-1),
             "input_ids": encoded_input["input_ids"],
             "ntok": torch.sum(encoded_input["attention_mask"], dim=1),
             "cls_emb": out.hidden_states[-1][:, 0],  # last layer, first token
@@ -205,11 +208,11 @@ class SeqModel(lit_model.Model):
             )
         return ret
 
-    def spec(self):
-        return {
-            "text": lit_types.TextSegment(),
-            "label": lit_types.CategoryLabel(vocab=self.LABELS),
-        }
+    # def spec(self):
+    #     return {
+    #         "text": lit_types.TextSegment(),
+    #         "label": lit_types.CategoryLabel(vocab=self.LABELS),
+    #     }
 
     def fit_transform_with_metadata(self, indexed_inputs):
         raise NotImplementedError()

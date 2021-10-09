@@ -33,7 +33,7 @@ from absl import logging
 from lit_nlp import dev_server
 from lit_nlp import server_flags
 
-from classifier_lit.seq_dataset import ClfDataset
+from classifier_lit.seq_dataset import SeqDataset
 from classifier_lit.seq_model import SeqModel
 
 FLAGS = flags.FLAGS
@@ -59,7 +59,7 @@ def main(_):
 
     lit_class = SeqModel(model_path)
     models = {"classifier": lit_class}
-    datasets = {"data": ClfDataset(data_csv, lit_class.LABELS, lbl_txt_cols)}
+    datasets = {"data": SeqDataset(data_csv, lit_class.LABELS, lbl_txt_cols)}
 
     lit_server = dev_server.Server(
         models, datasets, **server_flags.get_flags()
@@ -98,7 +98,7 @@ if __name__ == "__main__":
         type=str,
         required=True,
         help="python-style list of indexes [label-index, text-index] "
-             "in the .csv",
+        "in the .csv",
     )
     parser.add_argument(
         "--batch_size",
