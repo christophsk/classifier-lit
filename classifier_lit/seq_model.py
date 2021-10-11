@@ -208,14 +208,8 @@ class SeqModel(lit_model.Model):
             )
         return ret
 
-    # def spec(self):
-    #     return {
-    #         "text": lit_types.TextSegment(),
-    #         "label": lit_types.CategoryLabel(vocab=self.LABELS),
-    #     }
-
     def fit_transform_with_metadata(self, indexed_inputs):
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def get_embedding_table(self):
-        raise NotImplementedError()
+        raise NotImplementedError
